@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>S'inscrire</title>
+  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../style/styleGlobal.css">
+</head>
+<body>
+  <div class="wrapper fadeInDown">
+    <div id="formContent">
+      <!-- Tabs Titles -->
+
+      <!-- Icon -->
+      <div class="fadeIn first">
+        <img src="../assets/img/user-lock-solid.svg" id="icon" alt="User Icon" />
+      </div>
+
+      <!-- Login Form -->
+      <form class="formSign" onsubmit="registerUser(event)">
+        <input type="text" id="login" class="fadeIn second" name="login" placeholder="Pseudo">
+        <input type="text" id="Mail" class="fadeIn second" name="mail" placeholder="Mail">
+        <input type="password" id="password" class="fadeIn third" name="password" placeholder="Mot de passe">
+        <input type="password" id="passwordConfirm" class="fadeIn third" name="passwordConfirm" placeholder="Confirmer le mot de passe">
+        <input type="submit" class="fadeIn fourth" value="S'inscrire">
+      </form>
+
+      <!-- Remind Password -->
+      <div id="formFooter">
+        <a class="underlineHover" href="../index.html">Se connecter ?</a>
+      </div>
+    </div>
+  </div>
+  <script src="../renderer.js"></script>
+</body>
+</html>

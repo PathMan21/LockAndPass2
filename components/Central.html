@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votre gestionnaire</title>
+  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../style/styleLayout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.1/css/boxicons.min.css">
+</head>
+<body id="body-pd">
+    <header class="header" id="header">
+        <div class="header_toggle"> 
+            <i class='bx bx-menu' id="header-toggle"></i> 
+        </div>
+    </header>
+    <div class="l-navbar" id="nav-bar">
+        <nav class="nav">
+            <div> 
+                <div class="nav_list"> 
+                    <a href="#" class="nav_link active"> 
+                        <i class='bx bx-grid-alt nav_icon'></i> 
+                        <span class="nav_name">Dashboard</span> 
+                    </a> 
+                    <a href="Groups.html" class="nav_link"> 
+                        <i class='bx bx-folder nav_icon'></i> 
+                        <span class="nav_name">Files</span> 
+                    </a> 
+                </div>
+            </div> 
+            <a href="SignOff.html" class="nav_link"> 
+                <i class='bx bx-log-out nav_icon'></i> 
+                <span class="nav_name">SignOut</span> 
+            </a>
+        </nav>
+    </div>
+    <!-- Container Main start -->
+    <div class="container-fluid p-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Ajouter un utilisateur</h4>
+                <form id="addUserForm">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Identifiant</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" placeholder="Enter password">
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassword">Voir</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm-password" class="form-label">Confirmer le mot de passe</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirm-password" placeholder="Confirm password">
+                            <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">Voir</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <button type="button" class="btn btn-primary" onclick="generatePassword()">Générer un Mot de Passe</button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h4>Liste des Utilisateurs</h4>
+                <ul id="userList" class="list-group">
+                    <!-- Les utilisateurs ajoutés seront affichés ici -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Container Main end -->
+
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../controllers/passwordGenerate.js"></script> <!-- Lien vers votre fichier JavaScript pour la génération de mot de passe -->
+    <script src="../controllers/userList.js"></script> <!-- Lien vers votre fichier JavaScript pour la liste des utilisateurs -->
+</body>
+</html>
