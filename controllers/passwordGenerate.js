@@ -22,6 +22,45 @@ function generatePassword() {
 
     document.getElementById("password").value = password;
     document.getElementById("confirm-password").value = password;
+    checkPasswordStrength(password)
+}
+
+
+document.getElementById("password").addEventListener("input", function(event) {
+  const passwordVerif = event.target.value;
+  checkPasswordStrength(passwordVerif);
+});
+
+document.getElementById("toggleConfirmPassword").addEventListener("click", function(event) {
+  toggleConfirmPassword();
+});
+
+
+document.getElementById("togglePassword").addEventListener("click", function(event) {
+  togglePassword();
+});
+
+function checkPasswordStrength(passwordVerif) {
+  
+  const hasLowercase = /[a-z]/.test(passwordVerif);
+  const hasUppercase = /[A-Z]/.test(passwordVerif);
+  const hasDigit = /[0-9]/.test(passwordVerif);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(passwordVerif);
+
+  if (hasLowercase && hasUppercase && hasDigit && hasSpecial && passwordVerif.length > 12) {
+    colorChange("fort");
+
+  } else if ((hasLowercase || hasUppercase) && hasDigit) {
+    colorChange("moyen");
+
+  } else if ((hasLowercase || hasSpecial) && hasDigit) {
+    colorChange("moyen");
+  } else if ((hasLowercase || hasDigit) && passwordVerif.length > 12) {
+    colorChange("moyen");
+  } else {
+    colorChange("faible");
+  }
+
 }
 
 function togglePassword() {
@@ -52,54 +91,50 @@ function toggleConfirmPassword() {
     }
 }
 
-// Fonction pour ajouter un utilisateur
-function addUser() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirm-password").value;
+
+function colorChange(value) {
+
+  if (value === "faible") {
+
+  document.getElementById("strengthValidator").style.backgroundColor = "#FF4E4E";
   
-    if (password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas");
-      return;
-    }
-  
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
-      if (err) {
-        console.error("Erreur de hashage du mot de passe:", err);
-        return;
-      }
-  
-      // Envoyer les données à main process
-      ipcRenderer.send('userRegister', { username, password: hashedPassword });
-    });
+  } else if (value === "moyen") {
+    document.getElementById("strengthValidator").style.backgroundColor = "#FFBF4E";
+
+  } else if (value === "fort") {
+    document.getElementById("strengthValidator").style.backgroundColor = "#00DB7C";
   }
-  
-  // Soumission du formulaire pour ajouter un utilisateur
-  document.getElementById("addUserForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    addUser();
-  });
-  
-  // Écouter la réponse du processus principal
-  ipcRenderer.on('userRegisterResponse', (event, response) => {
-    if (response.success) {
-      // Utilisateur ajouté avec succès, afficher dans la liste
-      const userList = document.getElementById("userList");
-      const li = document.createElement("li");
-      li.className = "list-group-item";
-      li.textContent = `Utilisateur: ${response.username}`;
-  
-      const copyButton = document.createElement("button");
-      copyButton.className = "btn btn-primary btn-sm ms-2";
-      copyButton.textContent = "Copier";
-      copyButton.onclick = () => {
-        navigator.clipboard.writeText(response.password);
-        alert(`Mot de passe copié pour ${response.username}`);
-      };
-  
-      li.appendChild(copyButton);
-      userList.appendChild(li);
-    } else {
-      alert("Erreur lors de l'ajout de l'utilisateur: " + response.error);
-    }
-  });
+
+}
+
+
+
+
+
+function addPassword() {
+  const { jwtDecode } = require('jwt-decode');
+
+  // Récupérer le token JWT depuis localStorage
+  const token = localStorage.getItem("token");
+
+  // Décoder le token JWT pour obtenir les informations de l'utilisateur
+  try {
+    const decoded = jwtDecode(token);
+    console.log('Decoded token:', decoded);
+
+    // Récupérer le username depuis le token décrypté
+    const username = decoded.username;
+
+    // Récupérer les autres données du formulaire
+    const userPassword = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    // Envoi des données au processus principal pour l'ajout du mot de passe
+    ipcRenderer.send('addPassword', { username, userPassword, confirmPassword });
+  } catch (error) {
+    console.error('Erreur lors du décodage du token JWT:', error);
+  }
+}
+
+
+

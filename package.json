@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "dotenv": "^16.4.5",
     "electron": "^31.2.0"
   },
   "dependencies": {
@@ -21,9 +22,8 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "mongodb": "^6.8.0",
-    "mongoose": "^8.5.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "mongoose": "^8.5.1"
   }
 }

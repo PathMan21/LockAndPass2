@@ -38,8 +38,8 @@
     <div class="container-fluid p-4">
         <div class="row">
             <div class="col-md-6">
-                <h4>Ajouter un utilisateur</h4>
-                <form id="addUserForm">
+                <h4>Ajouter un Mot de passe</h4>
+                <form id="addPasswordForm">
                     <div class="mb-3">
                         <label for="username" class="form-label">Identifiant</label>
                         <input type="text" class="form-control" id="username" placeholder="Enter username">
@@ -58,14 +58,14 @@
                             <button type="button" class="btn btn-outline-secondary" id="toggleConfirmPassword">Voir</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <div id="strengthValidator" style="background-color: #D7E1E9;" class="rounded-5 m-2 p-1" ></div>
+                    <button type="button" class="btn btn-primary" onclick="addPassword()">Ajouter</button>
                     <button type="button" class="btn btn-primary" onclick="generatePassword()">Générer un Mot de Passe</button>
                 </form>
             </div>
             <div class="col-md-6">
-                <h4>Liste des Utilisateurs</h4>
-                <ul id="userList" class="list-group">
-                    <!-- Les utilisateurs ajoutés seront affichés ici -->
+                <h4>Liste des Mots de Passe</h4>
+                <ul id="passwordList" class="list-group">
                 </ul>
             </div>
         </div>
@@ -75,5 +75,11 @@
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../controllers/passwordGenerate.js"></script> <!-- Lien vers votre fichier JavaScript pour la génération de mot de passe -->
     <script src="../controllers/userList.js"></script> <!-- Lien vers votre fichier JavaScript pour la liste des utilisateurs -->
+    <script src="../controllers/jwtToken.js"></script>
+    <script src="../main.js"></script>
+    <script src="renderer.js"></script>
+  
+
+
 </body>
 </html>

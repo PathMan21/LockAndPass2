@@ -9,19 +9,15 @@
 <body>
   <div class="wrapper fadeInDown">
     <div id="formContent">
-      <!-- Tabs Titles -->
-
       <!-- Icon -->
       <div class="fadeIn first">
         <img src="assets/img/user-lock-solid.svg" id="icon" alt="User Icon" />
       </div>
 
       <!-- Login Form -->
-      <form class="formSign" onsubmit="loginUser(event)">
-        <input type="text" id="login" class="fadeIn second" name="login" placeholder="Pseudo">
-        <input type="password" id="password" class="fadeIn third" name="password" placeholder="Mot de passe">
-        <input type="submit" class="fadeIn fourth" value="S'identifier">
-      </form>
+      <input type="text" id="login" class="fadeIn second" name="login" placeholder="Pseudo">
+      <input type="password" id="password" class="fadeIn third" name="password" placeholder="Mot de passe">
+      <input type="button" class="fadeIn fourth" value="S'identifier" onclick="loginUser(event)">
 
       <!-- Remind Password -->
       <div id="formFooter">
@@ -30,4 +26,6 @@
     </div>
   </div>
   <script src="renderer.js"></script>
+  
+</body>
 </html>

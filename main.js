@@ -3,16 +3,17 @@ const path = require('path');
 const url = require('url');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const User = require('./models/user');
 
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const dbUrl = 'mongodb://localhost:27017/LockAndPass';
-
-const User = require('./models/user'); // Assurez-vous de créer ce modèle
-
 let mainWindow;
+
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
-  
+
   mainWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -26,7 +27,7 @@ function createWindow() {
     url.format({
       pathname: path.join(__dirname, 'index.html'),
       protocol: 'file:',
-      slashes: true
+      slashes: true,
     })
   );
 
@@ -60,18 +61,32 @@ app.on('activate', () => {
   }
 });
 
+function generateToken(user) {
+  return jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+}
+
 ipcMain.on('userRegister', async (event, userData) => {
   try {
-    const { username, mail, password } = userData;
-    const existingUser = await Password.findOne({ username });
-    
+    const { username, password, mail } = userData;
+
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
       event.reply('userRegisterResponse', { success: false, error: 'Username already exists' });
-    } else {
-      const newPassword = new Password({ username, mail, password });
-      await newPassword.save();
-      event.reply('userRegisterResponse', { success: true, username });
+      return;
     }
+
+    const newUser = new User({ username, password, mail });
+    await newUser.save();
+
+    event.reply('userRegisterResponse', { success: true, username });
+
+    mainWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file:',
+        slashes: true,
+      })
+    );
   } catch (error) {
     event.reply('userRegisterResponse', { success: false, error: error.message });
   }
@@ -81,9 +96,10 @@ ipcMain.on('userLogin', async (event, userData) => {
   try {
     const { username, password } = userData;
     const user = await User.findOne({ username });
-    
+
     if (user && await bcrypt.compare(password, user.password)) {
-      event.reply('userLoginResponse', { success: true });
+      const token = generateToken(user);
+      event.reply('userLoginResponse', { success: true, token });
     } else {
       event.reply('userLoginResponse', { success: false, error: 'Invalid username or password' });
     }
@@ -93,3 +109,39 @@ ipcMain.on('userLogin', async (event, userData) => {
 });
 
 
+function authenticateToken(event, token, next) {
+  if (!token) {
+    event.reply('errorResponse', { success: false, error: 'Unauthorized' });
+    return;
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      event.reply('errorResponse', { success: false, error: 'Forbidden' });
+      return;
+    }
+    event.user = user;
+    next();
+  });
+}
+ipcMain.on('addPassword', async (event, { username, userPassword }) => {
+  try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      throw new Error(`Utilisateur avec le username '${username}' non trouvé`);
+    }
+
+    user.passwords.push({ password: userPassword });
+    await user.save();
+
+    const passwords = user.passwords.map(pwd => ({ password: pwd.password }));
+
+    // Debugging
+    console.log('Mots de passe ajoutés :', passwords);
+
+    event.reply('addPasswordResponse', { success: true, passwords });
+  } catch (error) {
+    event.reply('addPasswordResponse', { success: false, error: error.message });
+  }
+});
