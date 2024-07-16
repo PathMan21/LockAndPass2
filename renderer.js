@@ -1,5 +1,7 @@
 const { ipcRenderer } = require('electron');
 const bcrypt = require('bcrypt');
+const swal = require('sweetalert'); // Import correct
+
 
 async function registerUser() {
   const username = document.getElementById('login').value;
@@ -8,7 +10,7 @@ async function registerUser() {
   const confirmPassword = document.getElementById('passwordConfirm').value;
 
   if (password !== confirmPassword) {
-    alert("Les mots de passe ne correspondent pas");
+    swal("Les mots de passe ne correspondent pas");
     return;
   }
 
@@ -17,7 +19,7 @@ async function registerUser() {
     ipcRenderer.send('userRegister', { username, password: hashedPassword, mail });
   } catch (error) {
     console.error('Error hashing password:', error);
-    alert('Erreur lors de l\'enregistrement : ' + error.message);
+    swal('Erreur lors de l\'enregistrement : ' + error.message);
   }
 }
 
@@ -33,25 +35,10 @@ function loginUser(event) {
 ipcRenderer.on('userLoginResponse', (event, response) => {
   if (response.success) {
     localStorage.setItem('token', response.token);
-    alert('Connexion réussie ! Redirection vers la page centrale.');
+    swal('Connexion réussie ! Redirection vers la page centrale.');
     window.location.href = './components/Central.html';
   } else {
-    alert('Erreur lors de la connexion : ' + response.error);
+    swal('Erreur lors de la connexion : ' + response.error);
   }
 });
 
-ipcRenderer.on('addPasswordResponse', (event, response) => {
-  if (response.success) {
-    const passwords = response.passwords;
-    const passwordList = document.getElementById('passwordList');
-    passwordList.innerHTML = ''; // Efface la liste actuelle
-
-    passwords.forEach(pwd => {
-      const li = document.createElement('li');
-      li.textContent = pwd.password; // Assurez-vous que "password" correspond à la structure de vos mots de passe
-      passwordList.appendChild(li);
-    });
-  } else {
-    console.error('Erreur lors de l\'ajout de mot de passe :', response.error);
-  }
-});

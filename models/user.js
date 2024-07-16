@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  passwords: [{ password: String }] // Array pour stocker les mots de passe
+  passwords: [{ password: String }] 
 });
 
 const User = mongoose.model('User', userSchema);

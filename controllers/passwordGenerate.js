@@ -9,12 +9,10 @@ function generatePassword() {
     const tableaunumero = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
     const tableausymbole = ["$", "%", "^", "&", "!", "@", "#", ":", ";", "'", ",", ".", ">", "/", "*", "-", "|", "?", "~", "_", "=", "+"];
 
-    // Concaténer tous les tableaux dans un seul tableau
     let arrayConcatenation = tableauminuscule.concat(tableaumajuscule, tableaunumero, tableausymbole);
 
     let password = "";
 
-    // Générer un mot de passe de 21 caractères
     for (let i = 0; i < 21; i++) {
         let randomIndex = Math.floor(Math.random() * arrayConcatenation.length);
         password += arrayConcatenation[randomIndex];
@@ -67,7 +65,6 @@ function togglePassword() {
     const passwordInput = document.getElementById("password");
     const toggleButton = document.getElementById("togglePassword");
 
-    // Toggle password visibility
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
         toggleButton.textContent = "Cacher";
@@ -81,7 +78,6 @@ function toggleConfirmPassword() {
     const confirmPasswordInput = document.getElementById("confirm-password");
     const toggleButton = document.getElementById("toggleConfirmPassword");
 
-    // Toggle confirm password visibility
     if (confirmPasswordInput.type === "password") {
         confirmPasswordInput.type = "text";
         toggleButton.textContent = "Cacher";
@@ -114,22 +110,17 @@ function colorChange(value) {
 function addPassword() {
   const { jwtDecode } = require('jwt-decode');
 
-  // Récupérer le token JWT depuis localStorage
   const token = localStorage.getItem("token");
 
-  // Décoder le token JWT pour obtenir les informations de l'utilisateur
   try {
     const decoded = jwtDecode(token);
     console.log('Decoded token:', decoded);
 
-    // Récupérer le username depuis le token décrypté
     const username = decoded.username;
 
-    // Récupérer les autres données du formulaire
     const userPassword = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
 
-    // Envoi des données au processus principal pour l'ajout du mot de passe
     ipcRenderer.send('addPassword', { username, userPassword, confirmPassword });
   } catch (error) {
     console.error('Erreur lors du décodage du token JWT:', error);
@@ -138,3 +129,18 @@ function addPassword() {
 
 
 
+ipcRenderer.on('addPasswordResponse', (event, response) => {
+  if (response.success) {
+    const passwords = response.passwords;
+    const passwordList = document.getElementById('passwordList');
+    passwordList.innerHTML = ''; 
+
+    passwords.forEach(pwd => {
+      const li = document.createElement('li');
+      li.textContent = pwd.password; 
+      passwordList.appendChild(li);
+    });
+  } else {
+    console.error('Erreur lors de l\'ajout de mot de passe :', response.error);
+  }
+});

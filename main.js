@@ -4,6 +4,8 @@ const url = require('url');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('./models/user');
+const swal = require('sweetalert'); // Import correct
+let passwords;
 
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -101,7 +103,7 @@ ipcMain.on('userLogin', async (event, userData) => {
       const token = generateToken(user);
       event.reply('userLoginResponse', { success: true, token });
     } else {
-      event.reply('userLoginResponse', { success: false, error: 'Invalid username or password' });
+      event.reply('userLoginResponse', { success: false, error: 'Votre identifiant ou votre mot de passe est invalide' });
     }
   } catch (error) {
     event.reply('userLoginResponse', { success: false, error: error.message });
