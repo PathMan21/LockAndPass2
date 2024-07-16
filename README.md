@@ -1,4 +1,4 @@
 Pour démarrer l'appli :
 
--> Npm i pour installer toutes les dépendance
--> Npm run start
+1. Npm i pour installer toutes les dépendance
+2. Npm run start
